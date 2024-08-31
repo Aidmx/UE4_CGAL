@@ -1,7 +1,7 @@
-#include "CGALPrivatePCH.h"
-#include "Core.h"
-#include "ModuleManager.h"
 #include "CGAL.h"
+//#include "CGALPrivatePCH.h"
+#include "Core.h"
+#include "Modules/ModuleManager.h"
 
 
 #define LOCTEXT_NAMESPACE "FCGALModule"
@@ -19,8 +19,8 @@ void FCGALModule::StartupModule()
 	LIBMPFR = FPaths::Combine(*BaseDir, TEXT("Binaries:Win64/libmpfr-4.dll"));
 #endif // PLATFORM_WINDOWS
 
-	LibraryHandle = !LIBGMP.IsEmpty() ? FPlatformProcess::GetDllHandle(*LIBGMP) : nullptr;
-	LibraryHandle = !LIBMPFR.IsEmpty() ? FPlatformProcess::GetDllHandle(*LIBMPFR) : nullptr;
+	LIBGMP_LibraryHandle = !LIBGMP.IsEmpty() ? FPlatformProcess::GetDllHandle(*LIBGMP) : nullptr;
+	LIBMPFR_LibraryHandle = !LIBMPFR.IsEmpty() ? FPlatformProcess::GetDllHandle(*LIBMPFR) : nullptr;
 }
 
 void FCGALModule::ShutdownModule()
@@ -28,8 +28,10 @@ void FCGALModule::ShutdownModule()
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
 
-	FPlatformProcess::FreeDllHandle(LibraryHandle);
-	LibraryHandle = nullptr;
+	FPlatformProcess::FreeDllHandle(LIBGMP_LibraryHandle);
+	LIBGMP_LibraryHandle = nullptr;
+	FPlatformProcess::FreeDllHandle(LIBMPFR_LibraryHandle);
+	LIBMPFR_LibraryHandle = nullptr;
 }
 
 #undef LOCTEXT_NAMESPACE

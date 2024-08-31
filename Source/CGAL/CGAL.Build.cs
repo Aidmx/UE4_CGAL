@@ -3,19 +3,20 @@ using System.IO;
 
 public class CGAL : ModuleRules
 {
-    private string ModulePath
-    {
-        get { return ModuleDirectory; }
-    }
+    //private string ModulePath
+    //{
+    //    get { return ModuleDirectory; }
+    //}
     private string ThirdPartyPath
     {
-        get { return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty/")); }
+        get { return Path.GetFullPath(Path.Combine(PluginDirectory, "ThirdParty/")); }
     }
 
+	// public CGAL(TargetInfo Target)
 	public CGAL(ReadOnlyTargetRules Target) : base(Target)
 	{
-        
-        bEnableUndefinedIdentifierWarnings = false;
+        //Type = ModuleType.External;
+        //bEnableUndefinedIdentifierWarnings = false;
         PublicDefinitions.Add("WIN32");
         PublicDefinitions.Add("_WINDOWS");
         PublicDefinitions.Add("_CRT_SECURE_NO_DEPRECATE");
@@ -29,10 +30,13 @@ public class CGAL : ModuleRules
         PublicDependencyModuleNames.AddRange(new string[] { "Core" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "CoreUObject", "Engine", "Slate", "SlateCore" });
 
+        PublicIncludePaths.AddRange(new string[] {Path.GetFullPath(Path.Combine(PluginDirectory, "Source/CGAL/Public"))});
+
         // Start CGAL linking here!
         bool isLibrarySupported = false;
 
         // Create CGAL Path
+        //Log.TraceWarning("My log ThirdPartyPath: {0}", ThirdPartyPath);
         string CGALPath = Path.Combine(ThirdPartyPath, "CGAL");
 
         // Get Library Path
@@ -55,24 +59,25 @@ public class CGAL : ModuleRules
             PublicIncludePaths.AddRange(new string[] { Path.Combine(CGALPath, "includes","GMP") });//Dependencie
 
             // Add Library Path
-            PublicLibraryPaths.Add(LibPath);
+            PublicSystemLibraryPaths.Add(LibPath);
 
             // Add Dependencies
             if (!isdebug)
             {
                 //Add Static Libraries
-                PublicAdditionalLibraries.Add(Path.Combine("libgmp-10.lib"));
-                PublicAdditionalLibraries.Add(Path.Combine("libmpfr-4.lib"));
-                PublicAdditionalLibraries.Add(Path.Combine("libCGAL-vc140-mt-4.9.lib"));
-                PublicAdditionalLibraries.Add(Path.Combine("libCGAL_Core-vc140-mt-4.9.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libgmp-10.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libmpfr-4.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libCGAL-vc140-mt-4.9.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libCGAL_Core-vc140-mt-4.9.lib"));
             }
             else
             {
                 //Add Static Libraries (Debug Version)
-                PublicAdditionalLibraries.Add(Path.Combine("libgmp-10.lib"));
-                PublicAdditionalLibraries.Add(Path.Combine("libmpfr-4.lib"));
-                PublicAdditionalLibraries.Add(Path.Combine("libCGAL-vc140-mt-gd-4.9.lib"));
-                PublicAdditionalLibraries.Add(Path.Combine("libCGAL_Core-vc140-mt-gd-4.9.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libgmp-10.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libmpfr-4.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libCGAL-vc140-mt-gd-4.9.lib"));
+                PublicAdditionalLibraries.Add(Path.Combine(LibPath, "libCGAL_Core-vc140-mt-gd-4.9.lib"));
+                //PublicAdditionalLibraries.Add(Path.Combine("libCGAL_Core-vc140-mt-gd-4.9.lib"));
             }
         }
 
